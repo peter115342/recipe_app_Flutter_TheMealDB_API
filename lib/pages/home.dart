@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
   AppBar buildAppBar() {
     return AppBar(
       title: const Text(
-        'Meal App',
+        'CuisineQuest',
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
@@ -231,23 +231,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      actions: [
-        GestureDetector(
-          onTap: () {
-            // TODO: Implement action
-          },
-          child: Container(
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Center(
-              child: Icon(Icons.more_horiz, color: Colors.black, size: 35),
-            ),
-          ),
-        ),
-      ],
+
     );
   }
 }
