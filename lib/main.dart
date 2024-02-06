@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/pages/home.dart';
-import 'package:food_app/pages/recipe.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
         scaffoldBackgroundColor: Colors.white,
       ),
-      home:   HomePage(),
+      home: const HomePage(),
     );
   }
 }

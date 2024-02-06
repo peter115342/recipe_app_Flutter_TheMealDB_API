@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:food_app/models/categoryModel.dart';
+import 'package:food_app/models/category_model.dart';
 import 'package:food_app/pages/recipe.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -14,13 +14,15 @@ class _HomePageState extends State<HomePage> {
   List<CategoryModel> categories = [];
   late Timer timer;
   bool isDarkMode = false;
-
+  TextEditingController searchController = TextEditingController();
+  bool isSearchActive = false;
 
   @override
   void initState() {
     super.initState();
-    getCategories(); // Call initially
-    timer = Timer.periodic(const Duration(minutes: 10), (Timer t) => getCategories());
+    getRandomCategories();
+    timer = Timer.periodic(
+        const Duration(minutes: 10), (Timer t) => getRandomCategories());
   }
 
   @override
@@ -29,9 +31,20 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void getCategories() async {
-    categories = await CategoryModel.getRandomCategories();
-    setState(() {});
+  void getRandomCategories() async {
+    if (!isSearchActive) {
+      categories = await CategoryModel.getRandomCategories();
+      setState(() {});
+    }
+  }
+
+  void getCategories(String input) async {
+    if (input.isNotEmpty) {
+      categories = await CategoryModel.getCategories(input);
+      setState(() {});
+    } else {
+      getRandomCategories();
+    }
   }
 
   @override
@@ -44,7 +57,6 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 10),
           Expanded(
             child: buildListView(),
-
           ),
         ],
       ),
@@ -52,71 +64,102 @@ class _HomePageState extends State<HomePage> {
   }
 
   ListView buildListView() {
-    return ListView.builder(
-            itemCount: categories.length,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecipePage(
-                        fullName: categories[index].fullName,
-                        categoryName: categories[index].categoryName,
-                        imageUrl: categories[index].imageUrl,
-                        recipeSteps: categories[index].recipeSteps,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(20),
-                  height: 428,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    image: DecorationImage(
-                      image: NetworkImage(categories[index].imageUrl),
-                      fit: BoxFit.cover,
+    List<CategoryModel> displayedCategories = isSearchActive ? categories : categories;
+
+    return ListView(
+      children: [
+        if (!isSearchActive) // Display different text when search is not active
+          const Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Random recipes for you!',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        else // Display "Our Picks" text when search is active
+          const Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Results : ',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: displayedCategories.length,
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipePage(
+                      fullName: displayedCategories[index].fullName,
+                      categoryName: displayedCategories[index].categoryName,
+                      imageUrl: displayedCategories[index].imageUrl,
+                      recipeSteps: displayedCategories[index].recipeSteps,
                     ),
                   ),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(15)),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 310),
-                          child: Text(
-                            categories[index].categoryName,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 29,
-                              fontWeight: FontWeight.bold,
-                            ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.all(20),
+                height: 428,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  image: DecorationImage(
+                    image: NetworkImage(displayedCategories[index].imageUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.3),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 310),
+                        child: Text(
+                          displayedCategories[index].categoryName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 29,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              );
-            },
-          );
+              ),
+            );
+          },
+        ),
+      ],
+    );
   }
+
+
 
   Container buildSearch() {
     return Container(
@@ -134,13 +177,19 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       child: TextField(
+        controller: searchController,
+        onChanged: (value) {
+          setState(() {
+            isSearchActive = value.isNotEmpty;
+          });
+          getCategories(value);
+        },
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.grey[200],
           border: InputBorder.none,
           hintText: 'Search Omelette',
           prefixIcon: const Icon(Icons.search, color: Colors.black, size: 35),
-
         ),
       ),
     );
@@ -173,7 +222,9 @@ class _HomePageState extends State<HomePage> {
           ),
           child: Center(
             child: Icon(
-              isDarkMode ? Icons.light_mode : Icons.dark_mode, // Change icon based on mode
+              isDarkMode
+                  ? Icons.light_mode
+                  : Icons.dark_mode, // TODO: Dark mode and light mode switching
               color: Colors.black,
               size: 35,
             ),

@@ -6,7 +6,8 @@ class RecipePage extends StatefulWidget {
   final String imageUrl;
   final String recipeSteps;
 
-  RecipePage({
+  const RecipePage({
+    super.key,
     required this.fullName,
     required this.categoryName,
     required this.imageUrl,
@@ -61,6 +62,3 @@ class _RecipePageState extends State<RecipePage> {
     );
   }
 }
-
-
-
