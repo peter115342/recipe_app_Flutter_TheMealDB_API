@@ -1,16 +1,9 @@
 # food_app
 
-A new Flutter project.
+A Simple responsive recipe finding app built with  Flutter using  TheMealDB API.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+![image](https://github.com/peter115342/recipe_app/assets/125477266/03341cb9-dff6-4ec8-a33f-a0f596b824c9)
 
-A few resources to get you started if this is your first Flutter project:
+![image](https://github.com/peter115342/recipe_app/assets/125477266/d57896fd-e6cd-4edd-b8f8-5480f40eba85)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
