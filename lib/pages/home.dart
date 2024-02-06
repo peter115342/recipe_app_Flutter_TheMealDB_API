@@ -1,69 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/models/categoryModel.dart';
-class HomePage extends StatelessWidget {
-   HomePage({Key? key});
 
-List<CategoryModel> categories = CategoryModel.getCategories();
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<CategoryModel> categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getCategories();
+  }
+
+  void getCategories() async {
+    categories = await CategoryModel.getCategories();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildAppBar(),
-        body: Column(
-          children: [
-            buildSearch(),
-            SizedBox.fromSize(size: const Size.fromHeight(20)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 24),
-                  child: Text(
-                    'Categories',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
+      appBar: buildAppBar(),
+      body: Column(
+        children: [
+          buildSearch(),
+          SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: categories.length,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.all(20),
+                  height: 428,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                    image: DecorationImage(
+                      image: NetworkImage(categories[index].imageUrl),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ),
-                SizedBox.fromSize(size: const Size.fromHeight(20)),
-                SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    itemCount: categories.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(left: 20),
-                        width: 150,
-                        decoration: BoxDecoration(
-                          color: categories[index].color,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Center(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                          bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 310.0), // Adjust the value as needed
                           child: Text(
                             categories[index].categoryName,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
 
-                ),
-              ],
-            )
-          ],
-        ));
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Container buildSearch() {
