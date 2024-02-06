@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:food_app/models/categoryModel.dart';
+import 'package:food_app/pages/recipe.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -10,15 +12,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<CategoryModel> categories = [];
+  late Timer timer;
+  bool isDarkMode = false;
+
 
   @override
   void initState() {
     super.initState();
-    getCategories();
+    getCategories(); // Call initially
+    timer = Timer.periodic(const Duration(minutes: 10), (Timer t) => getCategories());
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   void getCategories() async {
-    categories = await CategoryModel.getCategories();
+    categories = await CategoryModel.getRandomCategories();
     setState(() {});
   }
 
@@ -29,13 +41,36 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           buildSearch(),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
-            child: ListView.builder(
-              itemCount: categories.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                return Container(
+            child: buildListView(),
+
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListView buildListView() {
+    return ListView.builder(
+            itemCount: categories.length,
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecipePage(
+                        fullName: categories[index].fullName,
+                        categoryName: categories[index].categoryName,
+                        imageUrl: categories[index].imageUrl,
+                        recipeSteps: categories[index].recipeSteps,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
                   margin: const EdgeInsets.all(20),
                   height: 428,
                   decoration: BoxDecoration(
@@ -56,36 +91,31 @@ class _HomePageState extends State<HomePage> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      padding: const EdgeInsets.only(
-                          bottom: 16),
+                      padding: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.3),
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
+                        const BorderRadius.all(Radius.circular(15)),
                       ),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 310.0), // Adjust the value as needed
+                          padding: const EdgeInsets.only(top: 310),
                           child: Text(
                             categories[index].categoryName,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 32,
+                              fontSize: 29,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-
                     ),
                   ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+                ),
+              );
+            },
+          );
   }
 
   Container buildSearch() {
@@ -110,22 +140,7 @@ class _HomePageState extends State<HomePage> {
           border: InputBorder.none,
           hintText: 'Search Omelette',
           prefixIcon: const Icon(Icons.search, color: Colors.black, size: 35),
-          suffixIcon: const SizedBox(
-            width: 90,
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  VerticalDivider(
-                    color: Colors.black,
-                    thickness: 0.4,
-                    width: 20,
-                  ),
-                  Icon(Icons.filter_list, color: Colors.black, size: 35),
-                ],
-              ),
-            ),
-          ),
+
         ),
       ),
     );
@@ -136,14 +151,19 @@ class _HomePageState extends State<HomePage> {
       title: const Text(
         'Meal App',
         style: TextStyle(
-            color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 22,
+        ),
       ),
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
       leading: GestureDetector(
         onTap: () {
-          // TODO
+          setState(() {
+            isDarkMode = !isDarkMode; // Toggle the dark mode
+          });
         },
         child: Container(
           margin: const EdgeInsets.all(10),
@@ -151,16 +171,19 @@ class _HomePageState extends State<HomePage> {
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(15),
           ),
-          child: const Center(
-            child: Icon(Icons.chevron_left_outlined,
-                color: Colors.black, size: 35),
+          child: Center(
+            child: Icon(
+              isDarkMode ? Icons.light_mode : Icons.dark_mode, // Change icon based on mode
+              color: Colors.black,
+              size: 35,
+            ),
           ),
         ),
       ),
       actions: [
         GestureDetector(
           onTap: () {
-            // TODO
+            // TODO: Implement action
           },
           child: Container(
             margin: const EdgeInsets.all(10),

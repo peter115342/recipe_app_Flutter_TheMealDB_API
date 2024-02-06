@@ -4,19 +4,20 @@ import 'package:http/http.dart' as http;
 
 class CategoryModel {
   String categoryName;
+  String fullName;
+  String recipeSteps;
   String imageUrl;
-  Color color;
-
   CategoryModel({
     required this.categoryName,
     required this.imageUrl,
-    required this.color,
+    required this.fullName,
+    required this.recipeSteps,
   });
 
-  static Future<List<CategoryModel>> getCategories() async {
+  static Future<List<CategoryModel>> getRandomCategories() async {
     List<CategoryModel> categories = [];
 
-    for (int i = 0; i < 5; i++) { // Adjust the number of random meals you want to fetch
+    for (int i = 0; i < 7; i++) {
       final response = await http.get(Uri.parse('https://www.themealdb.com/api/json/v1/1/random.php'));
 
       if (response.statusCode == 200) {
@@ -27,12 +28,14 @@ class CategoryModel {
           String fullMealName = meal['strMeal'];
           String categoryName = getFirstThreeWords(fullMealName);
           String imageUrl = meal['strMealThumb'];
-          Color color = Colors.red;
+          String instructions = meal['strInstructions'];
+
 
           categories.add(CategoryModel(
             categoryName: categoryName,
             imageUrl: imageUrl,
-            color: color,
+            fullName: fullMealName,
+            recipeSteps: instructions,
           ));
 
           print('Meal: $categoryName');
@@ -45,11 +48,21 @@ class CategoryModel {
     return categories;
   }
 
+
   static String getFirstThreeWords(String fullString) {
     List<String> words = fullString.split(' ');
     if (words.length > 3) {
       return words.sublist(0, 3).join(' ');
-    } else {
+    }
+    if(words.length == 3 ){
+      if(words[2].compareTo('with')==0 || words[2].compareTo('and')==0 || words[2].compareTo('in')==0) {
+        return words.sublist(0, 2).join(' ');
+      }
+      else {
+        return words.sublist(0, 3).join(' ');
+      }
+    }
+    else {
       return fullString;
     }
   }
