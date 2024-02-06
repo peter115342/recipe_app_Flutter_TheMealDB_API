@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
             child: Icon(
               isDarkMode
                   ? Icons.light_mode
-                  : Icons.dark_mode, // TODO: Dark mode and light mode switching
+                  : Icons.dark_mode, // TODO: Dark/light mode switching
               color: Colors.black,
               size: 35,
             ),
