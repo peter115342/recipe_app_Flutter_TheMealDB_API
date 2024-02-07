@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getRandomCategories();
     timer = Timer.periodic(
-        const Duration(minutes: 10), (Timer t) => getRandomCategories());
+        const Duration(minutes: 5), (Timer t) => getRandomCategories());
   }
 
   @override
@@ -202,7 +202,7 @@ class _HomePageState extends State<HomePage> {
 
   AppBar buildAppBar() {
     return AppBar(
-      title:  const Text(
+      title: const Text(
         'CuisineQuest',
         style: TextStyle(
           fontWeight: FontWeight.bold,
@@ -210,12 +210,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       backgroundColor: Colors.transparent,
-      elevation: 0.0,
+      elevation: 0,
       centerTitle: true,
       leading: GestureDetector(
         onTap: () {
           setState(() {
-            isDarkMode = !isDarkMode; // Toggle dark mode
+            isDarkMode = !isDarkMode;
           });
         },
         child: Container(
