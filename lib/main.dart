@@ -14,7 +14,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Roboto',
-        scaffoldBackgroundColor: Colors.white,
       ),
       home: const HomePage(),
     );

@@ -26,12 +26,12 @@ class _RecipePageState extends State<RecipePage> {
         title: Text(
           widget.categoryName,
           style: const TextStyle(
-            color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 26,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(

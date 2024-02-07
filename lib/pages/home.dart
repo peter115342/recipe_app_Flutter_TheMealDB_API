@@ -49,26 +49,32 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(),
-      body: Column(
-        children: [
-          buildSearch(),
-          const SizedBox(height: 10),
-          Expanded(
-            child: buildListView(),
-          ),
-        ],
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: isDarkMode ? darkTheme : lightTheme,
+      home: Scaffold(
+
+        appBar: buildAppBar(),
+        body: Column(
+          children: [
+            buildSearch(),
+            const SizedBox(height: 10),
+            Expanded(
+              child: buildListView(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   ListView buildListView() {
-    List<CategoryModel> displayedCategories = isSearchActive ? categories : categories;
+    List<CategoryModel> displayedCategories =
+    isSearchActive ? categories : categories;
 
     return ListView(
       children: [
-        if (!isSearchActive) // Display different text when search is not active
+        if (!isSearchActive)
           const Padding(
             padding: EdgeInsets.all(10),
             child: Text(
@@ -79,7 +85,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           )
-        else // Display "Our Picks" text when search is active
+        else
           const Padding(
             padding: EdgeInsets.all(10),
             child: Text(
@@ -117,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.black.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 5,
                       offset: const Offset(0, 3),
@@ -134,7 +140,8 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.3),
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                      borderRadius:
+                      const BorderRadius.all(Radius.circular(15)),
                     ),
                     child: Center(
                       child: Padding(
@@ -159,20 +166,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-
   Container buildSearch() {
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: isDarkMode ? Colors.black : Colors.grey[200],
         borderRadius: BorderRadius.circular(25),
-        boxShadow: const [
+        boxShadow:  [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.black.withOpacity(0.5),
             blurRadius: 5,
-            offset: Offset(0, 5),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -186,10 +191,10 @@ class _HomePageState extends State<HomePage> {
         },
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.grey[200],
+          fillColor: isDarkMode ? Colors.black54 : Colors.grey[200],
           border: InputBorder.none,
           hintText: 'Search Omelette',
-          prefixIcon: const Icon(Icons.search, color: Colors.black, size: 35),
+          prefixIcon:  Icon(Icons.search, color: isDarkMode ? Colors.white : Colors.black, size: 35),
         ),
       ),
     );
@@ -197,41 +202,49 @@ class _HomePageState extends State<HomePage> {
 
   AppBar buildAppBar() {
     return AppBar(
-      title: const Text(
+      title:  const Text(
         'CuisineQuest',
         style: TextStyle(
-          color: Colors.black,
           fontWeight: FontWeight.bold,
           fontSize: 22,
         ),
       ),
-      backgroundColor: Colors.white,
-      elevation: 0,
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
       centerTitle: true,
       leading: GestureDetector(
         onTap: () {
           setState(() {
-            isDarkMode = !isDarkMode; // Toggle the dark mode
+            isDarkMode = !isDarkMode; // Toggle dark mode
           });
         },
         child: Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(15),
           ),
           child: Center(
             child: Icon(
               isDarkMode
                   ? Icons.light_mode
-                  : Icons.dark_mode, // TODO: Dark/light mode switching
-              color: Colors.black,
+                  : Icons.dark_mode,
+              color: isDarkMode ? Colors.white : Colors.black,
               size: 35,
             ),
           ),
         ),
       ),
-
     );
   }
 }
+
+final lightTheme = ThemeData(
+  primaryColor: Colors.white,
+  colorScheme: const ColorScheme.light(),
+);
+
+final darkTheme = ThemeData(
+  primaryColor: Colors.black,
+  colorScheme: const ColorScheme.dark(),
+
+);
