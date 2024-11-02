@@ -1,6 +1,6 @@
 # food_app
 
-A Simple responsive recipe finding app built with  Flutter using  TheMealDB API ( https://www.themealdb.com/ ) with the feature to randomly recommend recipes and a search bar as well. With dark/light mode implementation. Looking to add authentication using Firebase.
+A Simple responsive recipe finding app built with  Flutter using  TheMealDB API ( https://www.themealdb.com/ ) with the feature to randomly recommend recipes and a search bar as well. With dark/light mode implementation. 
 
 ![image](https://github.com/peter115342/recipe_app_Flutter_TheMealDB_API/assets/125477266/b062187d-a70b-4016-87c0-a4193aee9482)
 
